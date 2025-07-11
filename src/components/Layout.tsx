@@ -1,5 +1,5 @@
 import React from "react";
-//import NavBar from "./NavBar";
+import Header from "./Header";
 
 interface ILayoutProps {
   children: React.ReactNode;
@@ -8,7 +8,7 @@ interface ILayoutProps {
 export default function Layout({ children }: ILayoutProps) {
   return (
     <div>
-      {/** <NavBar /> */}
+      <Header />
       {children}
     </div>
   );
