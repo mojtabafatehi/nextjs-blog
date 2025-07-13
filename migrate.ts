@@ -7,17 +7,36 @@ async function migrate() {
     CREATE TABLE IF NOT EXISTS posts (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       title TEXT NOT NULL,
+      status TEXT DEFAULT 'draft', -- 'draft' | 'published'
+      event_date TEXT,
+      speakers TEXT,
+      location TEXT,
       description TEXT,
-      date TEXT,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
 
-    CREATE TABLE IF NOT EXISTS media (
+    CREATE TABLE IF NOT EXISTS images (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      post_id INTEGER NOT NULL,
-      type TEXT CHECK(type IN ('image', 'audio', 'video')),
-      url TEXT NOT NULL,
-      FOREIGN KEY (post_id) REFERENCES posts(id)
+      post_id INTEGER,
+      url TEXT,
+      alt TEXT,
+      FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
+    );
+
+    CREATE TABLE IF NOT EXISTS audios (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      post_id INTEGER,
+      url TEXT,
+      title TEXT,
+      FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
+    );
+
+    CREATE TABLE IF NOT EXISTS videos (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      post_id INTEGER,
+      url TEXT,
+      title TEXT,
+      FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
     );
 
     CREATE TABLE IF NOT EXISTS comments (
@@ -25,10 +44,10 @@ async function migrate() {
       post_id INTEGER NOT NULL,
       name TEXT,
       content TEXT NOT NULL,
-      approved INTEGER DEFAULT 0,
+      approved INTEGER DEFAULT 0, -- 0 = منتظر تأیید، 1 = تأیید شده
       reply TEXT,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY (post_id) REFERENCES posts(id)
+      FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
     );
 
     CREATE TABLE IF NOT EXISTS contact_messages (
@@ -46,8 +65,8 @@ async function migrate() {
     );
   `);
 
-  console.log("✅ Tables created.");
-  process.exit(0);
+  console.log("✅ All tables created successfully!");
+  await db.close();
 }
 
 migrate();
