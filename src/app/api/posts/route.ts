@@ -17,6 +17,7 @@ export async function POST(request: Request) {
     title,
     status = "draft",
     event_date,
+    cover_image_url,
     speakers,
     location,
     description,
@@ -24,11 +25,12 @@ export async function POST(request: Request) {
 
   const result = await db.run(
     `INSERT INTO posts 
-    (title, status, event_date, speakers, location, description) 
+    (title, status, event_date, cover_image_url ,speakers, location, description) 
     VALUES (?, ?, ?, ?, ?, ?)`,
     title,
     status,
     event_date,
+    cover_image_url,
     speakers,
     location,
     description

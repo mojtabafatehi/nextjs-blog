@@ -1,3 +1,4 @@
+/*
 import dbPromise from "./src/lib/db";
 
 async function migrate() {
@@ -67,6 +68,30 @@ async function migrate() {
 
   console.log("✅ All tables created successfully!");
   await db.close();
+}
+
+migrate();
+*/
+
+
+
+import dbPromise from "@/lib/db";
+
+async function migrate() {
+  const db = await dbPromise;
+
+  // اضافه کردن ستون جدید در صورت نبودن
+  const columns = await db.all("PRAGMA table_info(posts)");
+  const hasCoverImageColumn = columns.some((col) => col.name === "cover_image_url");
+
+  if (!hasCoverImageColumn) {
+    await db.exec(`ALTER TABLE posts ADD COLUMN cover_image_url TEXT;`);
+    console.log("ستون cover_image_url با موفقیت اضافه شد.");
+  } else {
+    console.log("ستون cover_image_url از قبل وجود دارد.");
+  }
+
+  // سایر ساختارهای جدول هم می‌تونی اینجا اضافه یا بررسی کنی
 }
 
 migrate();
