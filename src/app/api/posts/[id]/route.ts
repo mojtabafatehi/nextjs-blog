@@ -6,36 +6,38 @@ export async function PATCH(
   { params }: { params: { id: string } }
 ) {
   const db = await dbPromise;
-  const id = await params.id;
+  const id = params.id;
   const body = await request.json();
-
   const {
     title,
-    description,
-    event_date,
+    summary,
+    content,
     cover_image_url,
+    published_date,
+    author_name,
     status,
-    location,
-    speakers,
+    slug,
   } = body;
 
   await db.run(
     `UPDATE posts SET
-     title = ?,
-     description = ?,
-     event_date = ?,
-     cover_image_url = ?,
-     status = ?,
-     location = ?,
-     speakers = ?
-     WHERE id = ?`,
+      title = ?,
+      summary = ?,
+      content = ?,
+      cover_image_url = ?,
+      published_date = ?,
+      author_name = ?,
+      status = ?,
+      slug = ?
+      WHERE id = ?`,
     title,
-    description,
-    event_date,
+    summary,
+    content,
     cover_image_url,
+    published_date,
+    author_name,
     status,
-    location,
-    speakers,
+    slug,
     id
   );
 
