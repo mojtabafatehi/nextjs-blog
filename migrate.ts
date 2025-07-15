@@ -124,6 +124,15 @@ async function migrate() {
         (archive_id IS NULL     AND post_id IS NOT NULL)
       )
     );
+
+    CREATE TABLE IF NOT EXISTS sliders (
+       id INTEGER PRIMARY KEY AUTOINCREMENT,
+       image_url TEXT NOT NULL,
+       link_url TEXT,
+       alt TEXT,
+       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+
   `);
 
   console.log("✅ Database migrated successfully with the new schema.");
