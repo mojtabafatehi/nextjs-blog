@@ -3,10 +3,38 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   const db = await dbPromise;
+
+  // واکشی همه آرشیوها
   const archives = await db.all(
-    `SELECT * FROM archives ORDER BY created_at DESC`
+    "SELECT * FROM archives ORDER BY created_at DESC"
   );
-  return NextResponse.json(archives);
+
+  // برای هر آرشیو، مداحان و سخنرانانش را واکشی کن
+  const fullArchives = await Promise.all(
+    archives.map(async (archive) => {
+      // واکشی شرکت‌کنندگان آن آرشیو از جدول persons
+      const participants = await db.all(
+        `
+        SELECT persons.* FROM participants
+        JOIN persons ON persons.id = participants.person_id
+        WHERE participants.archive_id = ?
+      `,
+        archive.id
+      );
+
+      // جداسازی مداحان و سخنرانان
+      const reciters = participants.filter((p) => p.role === "reciter");
+      const speakers = participants.filter((p) => p.role === "speaker");
+
+      return {
+        ...archive,
+        reciters,
+        speakers,
+      };
+    })
+  );
+
+  return NextResponse.json(fullArchives);
 }
 
 export async function POST(request: Request) {

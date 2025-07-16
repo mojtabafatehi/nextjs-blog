@@ -10,11 +10,11 @@ const links = [
     title: " صفحه اصلی ",
   },
   {
-    href: "archiv",
+    href: "archives",
     title: " آرشیو مراسمات ",
   },
   {
-    href: "tazye",
+    href: "archives/tazye",
     title: "آرشیو تعزیه ",
   },
   {
