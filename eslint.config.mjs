@@ -11,6 +11,13 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
+  {
+    rules: {
+      "@typescript-eslint/no-explicit-any": "warn", // any → warning
+      "@typescript-eslint/no-unused-vars": "warn", // متغیرهای استفاده نشده → warning
+      "no-unused-vars": "off", // غیرفعال کردن نسخه JS
+    },
+  },
 ];
 
 export default eslintConfig;

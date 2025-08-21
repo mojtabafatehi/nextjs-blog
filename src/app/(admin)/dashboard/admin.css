@@ -10,5 +10,24 @@
 
 :root {
   --background: #f4f6f8;
-  --foreground: #959595;
+  --foreground: #171717;
+}
+
+@media (min-width: 1536px) {
+  .container {
+    max-width: 80rem !important; /* معادل 1280px */
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #293039;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Vazir;
 }

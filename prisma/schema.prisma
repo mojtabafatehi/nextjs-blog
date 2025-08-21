@@ -1,0 +1,148 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Archive {
+  id             Int           @id @default(autoincrement())
+  title          String
+  description    String?
+  event_date     DateTime?
+  location       String?
+  status         String        @default("draft")
+  slug           String        @unique
+  cover_image_url String?
+  created_at     DateTime      @default(now())
+  updated_at     DateTime      @default(now())
+
+  // Relations
+  participants   Participant[]
+  images         Image[]
+  audios         Audio[]
+  videos         Video[]
+  comments       Comment[]
+}
+
+model Post {
+  id             Int           @id @default(autoincrement())
+  title          String
+  summary        String?
+  content        String
+  cover_image_url String?
+  published_date DateTime
+  author_name    String
+  status         String        @default("draft")
+  slug           String        @unique
+  created_at     DateTime      @default(now())
+  updated_at     DateTime      @default(now())
+
+  // Relations
+  images         Image[]
+  audios         Audio[]
+  videos         Video[]
+  comments       Comment[]
+}
+
+model Person {
+  id          Int           @id @default(autoincrement())
+  full_name   String
+  role        Role
+  avatar_url  String?
+  created_at  DateTime      @default(now())
+
+  // Relations
+  participants Participant[]
+  audios       Audio[]      @relation("AudioArtist")
+}
+
+model Participant {
+  id         Int     @id @default(autoincrement())
+  archive_id Int
+  person_id  Int
+
+  archive    Archive @relation(fields: [archive_id], references: [id])
+  person     Person  @relation(fields: [person_id], references: [id])
+}
+
+model ContactMessage {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String?
+  message   String
+  created_at DateTime @default(now())
+}
+
+model Admin {
+  id            Int    @id @default(autoincrement())
+  username      String @unique
+  password_hash String
+}
+
+model Image {
+  id         Int     @id @default(autoincrement())
+  archive_id Int?
+  post_id    Int?
+  url        String
+  alt        String?
+
+  archive    Archive? @relation(fields: [archive_id], references: [id])
+  post       Post?    @relation(fields: [post_id], references: [id])
+}
+
+model Audio {
+  id         Int     @id @default(autoincrement())
+  archive_id Int?
+  artist_id  Int?
+  post_id    Int?
+  url        String
+  title      String?
+
+  archive    Archive? @relation(fields: [archive_id], references: [id])
+  artist     Person?  @relation("AudioArtist", fields: [artist_id], references: [id])
+  post       Post?    @relation(fields: [post_id], references: [id])
+}
+
+model Video {
+  id         Int     @id @default(autoincrement())
+  archive_id Int?
+  post_id    Int?
+  url        String
+  title      String?
+
+  archive    Archive? @relation(fields: [archive_id], references: [id])
+  post       Post?    @relation(fields: [post_id], references: [id])
+}
+
+model Comment {
+  id         Int     @id @default(autoincrement())
+  archive_id Int?
+  post_id    Int?
+  name       String?
+  content    String
+  approved   Boolean @default(false)
+  reply      String?
+  created_at DateTime @default(now())
+
+  archive    Archive? @relation(fields: [archive_id], references: [id])
+  post       Post?    @relation(fields: [post_id], references: [id])
+}
+
+model Slider {
+  id         Int     @id @default(autoincrement())
+  image_url  String
+  link_url   String?
+  alt        String?
+  created_at DateTime @default(now())
+}
+
+enum Role {
+  speaker
+  reciter
+}

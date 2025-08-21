@@ -1,3 +1,4 @@
+import { getArchives } from "@/app/actions/listArchive";
 import ArchiveItem from "./ArchiveItem";
 
 export interface IPerson {
@@ -22,15 +23,12 @@ export interface IArchiveItemProps {
 }
 
 export default async function ListArchiveItem() {
-  const res = await fetch("http://localhost:3000/api/archives", {
-    cache: "no-store",
-  });
-
-  const data = (await res.json()) as IArchiveItemProps[];
+  const result = await getArchives();
+  const archives = result.data as IArchiveItemProps[];
 
   return (
     <div className="flex justify-between gap-4 my-5">
-      {data.slice(0, 4).map((archive) => (
+      {archives.slice(0, 4).map((archive) => (
         <ArchiveItem key={archive.id} archive={archive} />
       ))}
     </div>

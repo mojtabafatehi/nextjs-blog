@@ -9,7 +9,7 @@ export default function Layout({ children }: ILayoutProps) {
   return (
     <div>
       <Header />
-      {children}
+      <main>{children}</main>
       <Footer />
     </div>
   );
